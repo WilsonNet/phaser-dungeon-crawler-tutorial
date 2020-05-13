@@ -24,5 +24,30 @@ export default class HelloWorldScene extends Phaser.Scene {
       collidingTileColor: new Phaser.Display.Color(243, 234, 48, 255),
       faceColor: new Phaser.Display.Color(40, 39, 37, 255),
     });
+
+    const faune = this.add.sprite(128, 128, 'faune', 'walk-down-3.png');
+    this.anims.create({
+      key: 'faune-idle-down',
+      frames: [
+        {
+          key: 'faune',
+          frame: 'walk-down-3.png',
+        },
+      ],
+    });
+
+    this.anims.create({
+      key: 'faune-run-down',
+      frames: this.anims.generateFrameNames('faune', {
+        start: 1,
+        end: 8,
+        prefix: 'run-down-',
+        suffix: '.png',
+      }),    // Gera os frames com base no atlas
+      repeat: -1,
+      frameRate: 14
+    });
+
+    faune.anims.play('faune-run-down');
   }
 }
