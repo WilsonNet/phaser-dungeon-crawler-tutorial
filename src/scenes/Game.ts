@@ -35,6 +35,33 @@ export default class HelloWorldScene extends Phaser.Scene {
         },
       ],
     });
+    this.anims.create({
+      key: 'faune-idle-up',
+      frames: [
+        {
+          key: 'faune',
+          frame: 'walk-up-3.png',
+        },
+      ],
+    });
+    this.anims.create({
+      key: 'faune-idle-side',
+      frames: [
+        {
+          key: 'faune',
+          frame: 'walk-side-3.png',
+        },
+      ],
+    });
+    this.anims.create({
+      key: 'faune-idle-left',
+      frames: [
+        {
+          key: 'faune',
+          frame: 'walk-left-3.png',
+        },
+      ],
+    });
 
     this.anims.create({
       key: 'faune-run-down',
@@ -47,7 +74,42 @@ export default class HelloWorldScene extends Phaser.Scene {
       repeat: -1,
       frameRate: 14
     });
+   
+    this.anims.create({
+      key: 'faune-run-up',
+      frames: this.anims.generateFrameNames('faune', {
+        start: 1,
+        end: 8,
+        prefix: 'run-up-',
+        suffix: '.png',
+      }),    // Gera os frames com base no atlas
+      repeat: -1,
+      frameRate: 14
+    });
 
-    faune.anims.play('faune-run-down');
+    this.anims.create({
+      key: 'faune-run-side',
+      frames: this.anims.generateFrameNames('faune', {
+        start: 1,
+        end: 8,
+        prefix: 'run-side-',
+        suffix: '.png',
+      }),    // Gera os frames com base no atlas
+      repeat: -1,
+      frameRate: 14
+    });
+    this.anims.create({
+      key: 'faune-run-left',
+      frames: this.anims.generateFrameNames('faune', {
+        start: 1,
+        end: 8,
+        prefix: 'run-left-',
+        suffix: '.png',
+      }),    // Gera os frames com base no atlas
+      repeat: -1,
+      frameRate: 14
+    });
+
+    faune.anims.play('faune-idle-side');
   }
 }
