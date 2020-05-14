@@ -30,6 +30,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     });
 
     this.faune = this.physics.add.sprite(128, 128, 'faune', 'walk-down-3.png');
+    this.faune.body.setSize(this.faune.width * 0.5, this.faune.height * 0.8);
     this.anims.create({
       key: 'faune-idle-down',
       frames: [
@@ -95,6 +96,8 @@ export default class HelloWorldScene extends Phaser.Scene {
     });
 
     this.faune.anims.play('faune-idle-side');
+    this.physics.add.collider(this.faune, wallsLayer);
+    this.cameras.main.startFollow(this.faune, true);
   }
 
   update(t: number, dt: number) {
@@ -102,11 +105,13 @@ export default class HelloWorldScene extends Phaser.Scene {
     if (this.cursors.left?.isDown) {
       this.faune.anims.play('faune-run-side', true);
       this.faune.scaleX = -1;
+      this.faune.body.offset.x = 24;
       this.faune.setVelocity(-speed, 0);
     } else if (this.cursors.right?.isDown) {
       this.faune.anims.play('faune-run-side', true);
       this.faune.scaleX = 1;
       this.faune.setVelocity(speed, 0);
+      this.faune.body.offset.x = 8;
     } else if (this.cursors.up?.isDown) {
       this.faune.anims.play('faune-run-up', true);
       this.faune.setVelocity(0, -speed);
@@ -114,7 +119,9 @@ export default class HelloWorldScene extends Phaser.Scene {
       this.faune.anims.play('faune-run-down', true);
       this.faune.setVelocity(0, speed);
     } else {
-      this.faune.anims.play('faune-idle-down', true);
+      const parts = this.faune.anims.currentAnim.key.split('-');
+      parts[1] = 'idle';
+      this.faune.anims.play(parts.join('-'), true);
       this.faune.setVelocity(0, 0);
     }
   }
