@@ -16,7 +16,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     // key = this.load.tilemapTiledJSON
     const map = this.make.tilemap({ key: 'dungeon' });
     // name = JSON tilesets.name, key = this.load.image
-    const tileset = map.addTilesetImage('dungeon', 'tiles');
+    const tileset = map.addTilesetImage('dungeon', 'tiles', 16, 16, 1, 2);
     // Nome das Layers no TIled
     map.createStaticLayer('Ground', tileset);
     const wallsLayer = map.createStaticLayer('Walls', tileset);
