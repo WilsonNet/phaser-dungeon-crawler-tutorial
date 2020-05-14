@@ -1,8 +1,9 @@
-/*  Essa classe existe porque o Animation Manager é global então as
+/*  Essa função existe porque o Animation Manager é global então as
  classes precisam ser criadas só uma vez */
 import Phaser from 'phaser';
 
 export const createLizardAnims = (anims: Phaser.Animations.AnimationManager) => {
+  console.log(anims)
   anims.create({
     key: 'lizard-idle',
     frames: anims.generateFrameNames('lizard', {

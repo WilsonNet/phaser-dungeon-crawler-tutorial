@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { createLizardAnims } from '../anims/EnemyAnims';
 
 export default class Lizard extends Phaser.Physics.Arcade.Sprite {
   constructor(
@@ -9,5 +10,8 @@ export default class Lizard extends Phaser.Physics.Arcade.Sprite {
     frame?: string | number
   ) {
     super(scene, x, y, texture, frame);
+    this.anims.play('lizard-idle');
   }
+
+  static createLizardAnims = createLizardAnims;
 }

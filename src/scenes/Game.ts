@@ -1,8 +1,7 @@
 import Phaser from 'phaser';
 import { debugDraw } from '../utils/debug';
-import { createLizardAnims } from '../anims/EnemyAnims';
 import { createCharacterAnims } from '../anims/CharacterAnims';
-
+import Lizard from '../enemies/Lizard';
 export default class HelloWorldScene extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private faune!: Phaser.Physics.Arcade.Sprite;
@@ -15,8 +14,8 @@ export default class HelloWorldScene extends Phaser.Scene {
   }
 
   create() {
-    createLizardAnims(this.anims);
-    createCharacterAnims(this.anims);
+    Lizard.createLizardAnims(this.anims);
+    createCharacterAnims(this.anims)
 
     // key = this.load.tilemapTiledJSON
     const map = this.make.tilemap({ key: 'dungeon' });
@@ -37,14 +36,13 @@ export default class HelloWorldScene extends Phaser.Scene {
     this.physics.add.collider(this.faune, wallsLayer);
     this.cameras.main.startFollow(this.faune, true);
 
-    const lizard = this.physics.add.sprite(
-      256,
-      128,
-      'lizard',
-      'lizard_m_idle_anim_f2.png'
-    );
+    const lizards = this.physics.add.group({
+      classType: Lizard
+    })
 
-    lizard.anims.play('lizard-run');
+    lizards.get(256, 128, 'lizard')
+
+    
   }
 
   update(t: number, dt: number) {
