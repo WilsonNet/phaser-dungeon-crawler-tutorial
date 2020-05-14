@@ -15,7 +15,7 @@ export default class HelloWorldScene extends Phaser.Scene {
 
   create() {
     Lizard.createLizardAnims(this.anims);
-    createCharacterAnims(this.anims)
+    createCharacterAnims(this.anims);
 
     // key = this.load.tilemapTiledJSON
     const map = this.make.tilemap({ key: 'dungeon' });
@@ -33,16 +33,19 @@ export default class HelloWorldScene extends Phaser.Scene {
     this.faune.body.setSize(this.faune.width * 0.5, this.faune.height * 0.8);
 
     this.faune.anims.play('faune-idle-side');
-    this.physics.add.collider(this.faune, wallsLayer);
     this.cameras.main.startFollow(this.faune, true);
 
     const lizards = this.physics.add.group({
-      classType: Lizard
-    })
+      classType: Lizard,
+      createCallback: (go) => {
+        const lizGo = go as Lizard;
+        lizGo.body.onCollide = true;
+      },
+    });
 
-    lizards.get(256, 128, 'lizard')
-
-    
+    lizards.get(256, 128, 'lizard');
+    this.physics.add.collider(lizards, wallsLayer);
+    this.physics.add.collider(this.faune, wallsLayer);
   }
 
   update(t: number, dt: number) {
