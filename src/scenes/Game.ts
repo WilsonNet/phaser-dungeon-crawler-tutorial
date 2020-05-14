@@ -1,11 +1,15 @@
 import Phaser from 'phaser';
 
 export default class HelloWorldScene extends Phaser.Scene {
+  private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
+  private faune!: Phaser.Physics.Arcade.Sprite;
   constructor() {
     super('game');
   }
 
-  preload() {}
+  preload() {
+    this.cursors = this.input.keyboard.createCursorKeys();
+  }
 
   create() {
     // key = this.load.tilemapTiledJSON
@@ -25,7 +29,7 @@ export default class HelloWorldScene extends Phaser.Scene {
       faceColor: new Phaser.Display.Color(40, 39, 37, 255),
     });
 
-    const faune = this.add.sprite(128, 128, 'faune', 'walk-down-3.png');
+    this.faune = this.physics.add.sprite(128, 128, 'faune', 'walk-down-3.png');
     this.anims.create({
       key: 'faune-idle-down',
       frames: [
@@ -53,15 +57,6 @@ export default class HelloWorldScene extends Phaser.Scene {
         },
       ],
     });
-    this.anims.create({
-      key: 'faune-idle-left',
-      frames: [
-        {
-          key: 'faune',
-          frame: 'walk-left-3.png',
-        },
-      ],
-    });
 
     this.anims.create({
       key: 'faune-run-down',
@@ -70,11 +65,11 @@ export default class HelloWorldScene extends Phaser.Scene {
         end: 8,
         prefix: 'run-down-',
         suffix: '.png',
-      }),    // Gera os frames com base no atlas
+      }), // Gera os frames com base no atlas
       repeat: -1,
-      frameRate: 14
+      frameRate: 14,
     });
-   
+
     this.anims.create({
       key: 'faune-run-up',
       frames: this.anims.generateFrameNames('faune', {
@@ -82,9 +77,9 @@ export default class HelloWorldScene extends Phaser.Scene {
         end: 8,
         prefix: 'run-up-',
         suffix: '.png',
-      }),    // Gera os frames com base no atlas
+      }), // Gera os frames com base no atlas
       repeat: -1,
-      frameRate: 14
+      frameRate: 14,
     });
 
     this.anims.create({
@@ -94,22 +89,33 @@ export default class HelloWorldScene extends Phaser.Scene {
         end: 8,
         prefix: 'run-side-',
         suffix: '.png',
-      }),    // Gera os frames com base no atlas
+      }), // Gera os frames com base no atlas
       repeat: -1,
-      frameRate: 14
-    });
-    this.anims.create({
-      key: 'faune-run-left',
-      frames: this.anims.generateFrameNames('faune', {
-        start: 1,
-        end: 8,
-        prefix: 'run-left-',
-        suffix: '.png',
-      }),    // Gera os frames com base no atlas
-      repeat: -1,
-      frameRate: 14
+      frameRate: 14,
     });
 
-    faune.anims.play('faune-idle-side');
+    this.faune.anims.play('faune-idle-side');
+  }
+
+  update(t: number, dt: number) {
+    const speed = 100;
+    if (this.cursors.left?.isDown) {
+      this.faune.anims.play('faune-run-side', true);
+      this.faune.scaleX = -1;
+      this.faune.setVelocity(-speed, 0);
+    } else if (this.cursors.right?.isDown) {
+      this.faune.anims.play('faune-run-side', true);
+      this.faune.scaleX = 1;
+      this.faune.setVelocity(speed, 0);
+    } else if (this.cursors.up?.isDown) {
+      this.faune.anims.play('faune-run-up', true);
+      this.faune.setVelocity(0, -speed);
+    } else if (this.cursors.down?.isDown) {
+      this.faune.anims.play('faune-run-down', true);
+      this.faune.setVelocity(0, speed);
+    } else {
+      this.faune.anims.play('faune-idle-down', true);
+      this.faune.setVelocity(0, 0);
+    }
   }
 }
