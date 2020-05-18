@@ -3,9 +3,10 @@ import { debugDraw } from '../utils/debug'
 import { createCharacterAnims } from '../anims/CharacterAnims'
 import Lizard from '../enemies/Lizard'
 import '../characters/Faune'
+import Faune from '../characters/Faune'
 export default class HelloWorldScene extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
-  private faune!: Phaser.Physics.Arcade.Sprite
+  private faune!: Faune 
 
   private hit = 0
   constructor () {
@@ -15,6 +16,8 @@ export default class HelloWorldScene extends Phaser.Scene {
   preload () {
     this.cursors = this.input.keyboard.createCursorKeys()
   }
+
+  
 
   create () {
     // key = this.load.tilemapTiledJSON
@@ -60,18 +63,11 @@ export default class HelloWorldScene extends Phaser.Scene {
     const dx = this.faune.x - lizard.x
     const dy = this.faune.y - lizard.y
     const dir = new Phaser.Math.Vector2(dx, dy).normalize().scale(200)
-    this.faune.setVelocity(dir.x, dir.y)
-    this.hit = 1
+    this.faune.handleDamage(dir)
   }
 
   update (t: number, dt: number) {
-    if (this.hit > 0) {
-      ++this.hit
-      if (this.hit > 10) {
-        this.hit = 0
-      }
-      return
-    }
+ 
     this.faune?.update(this.cursors)
   }
 }
