@@ -22,9 +22,35 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     frame?: string | number | undefined
   ) {
     super(scene, x, y, texture, frame)
-    // this.body.setSize(this.width * 0.5, this.height * 0.8);
     this.anims.play('faune-idle-down')
   }
+  update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
+
+    const speed = 100
+    if (cursors.left?.isDown) {
+      this.anims.play('faune-run-side', true)
+      this.scaleX = -1
+      this.body.offset.x = 24
+      this.setVelocity(-speed, 0)
+    } else if (cursors.right?.isDown) {
+      this.anims.play('faune-run-side', true)
+      this.scaleX = 1
+      this.setVelocity(speed, 0)
+      this.body.offset.x = 8
+    } else if (cursors.up?.isDown) {
+      this.anims.play('faune-run-up', true)
+      this.setVelocity(0, -speed)
+    } else if (cursors.down?.isDown) {
+      this.anims.play('faune-run-down', true)
+      this.setVelocity(0, speed)
+    } else {
+      const parts = this.anims.currentAnim.key.split('-')
+      parts[1] = 'idle'
+      this.anims.play(parts.join('-'), true)
+      this.setVelocity(0, 0)
+    }
+  }
+  
 }
 
 Phaser.GameObjects.GameObjectFactory.register('faune', function (
