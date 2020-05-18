@@ -1,84 +1,84 @@
-import Phaser from 'phaser';
-import { createLizardAnims } from '../anims/EnemyAnims';
+import Phaser from 'phaser'
+import { createLizardAnims } from '../anims/EnemyAnims'
 
 enum Direction {
   UP,
   DOWN,
   LEFT,
-  RIGHT,
+  RIGHT
 }
 
 const randomDirection = (exclude: Direction) => {
-  let newDirection = Phaser.Math.Between(0, 3);
+  let newDirection = Phaser.Math.Between(0, 3)
   while (newDirection === exclude) {
-    newDirection = Phaser.Math.Between(0, 3);
+    newDirection = Phaser.Math.Between(0, 3)
   }
-  return newDirection;
-};
+  return newDirection
+}
 
 export default class Lizard extends Phaser.Physics.Arcade.Sprite {
-  private direction = Direction.RIGHT;
-  private moveEvent: Phaser.Time.TimerEvent;
-  constructor(
+  private direction = Direction.RIGHT
+  private moveEvent: Phaser.Time.TimerEvent
+  constructor (
     scene: Phaser.Scene,
     x: number,
     y: number,
     texture: string,
     frame?: string | number
   ) {
-    super(scene, x, y, texture, frame);
-    this.anims.play('lizard-idle');
+    super(scene, x, y, texture, frame)
+    this.anims.play('lizard-idle')
 
     scene.physics.world.on(
       Phaser.Physics.Arcade.Events.TILE_COLLIDE,
       this.handleTileCollision,
       this
-    );
+    )
 
     this.moveEvent = scene.time.addEvent({
       delay: 2000,
       callback: () => {
-        this.direction = randomDirection(this.direction);
+        this.direction = randomDirection(this.direction)
       },
-      loop: true,
-    });
+      loop: true
+    })
   }
 
-  detroy(fromScene?: boolean) {
-    this.moveEvent.destroy();
+  detroy (fromScene?: boolean) {
+    this.moveEvent.destroy()
     // Super no final, pra ter certeza que nossa destruição veio antes
-    super.destroy(fromScene); 
+    super.destroy(fromScene)
   }
 
-  private handleTileCollision(
+  private handleTileCollision (
     go: Phaser.GameObjects.GameObject,
-    tile: Phaser.Tilemaps.Tile
+    tile?: Phaser.Tilemaps.Tile
   ) {
     if (go !== this) {
-      return;
+      return
     }
 
-    this.direction = randomDirection(this.direction);
+    this.direction = randomDirection(this.direction)
   }
 
-  preUpdate(t: number, dt: number) {
-    super.preUpdate(t, dt);
-    const speed = 50;
+  preUpdate (t: number, dt: number) {
+    super.preUpdate(t, dt)
+    const speed = 50
     switch (this.direction) {
       case Direction.UP:
-        this.setVelocity(0, -speed);
-        break;
+        this.setVelocity(0, -speed)
+        break
       case Direction.DOWN:
-        this.setVelocity(0, speed);
-        break;
+        this.setVelocity(0, speed)
+        break
       case Direction.LEFT:
-        this.setVelocity(-speed, 0);
-        break;
+        this.setVelocity(-speed, 0)
+        break
       case Direction.RIGHT:
-        this.setVelocity(speed, 0);
-        break;
+        this.setVelocity(speed, 0)
+        break
     }
   }
 
-  static createLizardAnims = createLizardAnims;
+  static createLizardAnims = createLizardAnims
 }
