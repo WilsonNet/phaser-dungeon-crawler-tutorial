@@ -20,15 +20,25 @@ export default class GameUi extends Phaser.Scene {
       },
       quantity: 3
     })
-    sceneEvents.on('player-health-changed', this.handlePlayerHealthChanged, this)
+    sceneEvents.on(
+      'player-health-changed',
+      this.handlePlayerHealthChanged,
+      this
+    )
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
+      sceneEvents.off(
+        'player-health-changed',
+        this.handlePlayerHealthChanged,
+        this
+      )
+    })
   }
   handlePlayerHealthChanged (health: number) {
     this.hearts.children.each((go, idx) => {
       const heart = go as Phaser.GameObjects.Image
       if (idx < health) {
         heart.setTexture('ui-heart-full')
-      }
-      else {
+      } else {
         heart.setTexture('ui-heart-empty')
       }
     })
