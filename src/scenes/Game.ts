@@ -20,6 +20,8 @@ export default class HelloWorldScene extends Phaser.Scene {
   
 
   create () {
+    //Run two scenes at the same time
+    this.scene.run('game-ui')
     // key = this.load.tilemapTiledJSON
     const map = this.make.tilemap({ key: 'dungeon' })
     // name = JSON tilesets.name, key = this.load.image
