@@ -1,9 +1,10 @@
 import Phaser from 'phaser'
-import { debugDraw } from '../utils/debug'
+// import { debugDraw } from '../utils/debug'
 import { createCharacterAnims } from '../anims/CharacterAnims'
 import Lizard from '../enemies/Lizard'
 import '../characters/Faune'
 import Faune from '../characters/Faune'
+import { sceneEvents } from '../events/EventCenter'
 export default class HelloWorldScene extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
   private faune!: Faune 
@@ -66,6 +67,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     const dy = this.faune.y - lizard.y
     const dir = new Phaser.Math.Vector2(dx, dy).normalize().scale(200)
     this.faune.handleDamage(dir)
+    sceneEvents.emit('player-health-changed', this.faune.health)
   }
 
   update (t: number, dt: number) {
