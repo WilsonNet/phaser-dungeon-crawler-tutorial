@@ -65,4 +65,17 @@ export const createCharacterAnims = (
     repeat: -1,
     frameRate: 14
   })
+
+  anims.create({
+    key: 'faune-faint',
+    frames: anims.generateFrameNames('faune', {
+      start: 1,
+      end: 8,
+      prefix: 'faint-',
+      suffix: '.png'
+    }), // Gera os frames com base no atlas
+    frameRate: 14
+  })
 }
+
+
