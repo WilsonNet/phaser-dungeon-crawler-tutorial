@@ -39,6 +39,7 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     this.damageTime = 0;
   }
   preUpdate (t: number, dt: number) {
+    super.preUpdate(t, dt)
     switch (this.healthState) {
       case HealthState.IDLE:
         break
