@@ -20,6 +20,7 @@ enum HealthState {
 export default class Faune extends Phaser.Physics.Arcade.Sprite {
   private healthState = HealthState.IDLE
   private damageTime = 0
+  private knives?: Phaser.Physics.Arcade.Group
 
   private _health = 3
 
@@ -37,26 +38,55 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     super(scene, x, y, texture, frame)
     this.anims.play('faune-idle-down')
   }
+
+  setKnives (knifes: Phaser.Physics.Arcade.Group) {
+    this.knives = knifes
+  }
+
   handleDamage (dir: Phaser.Math.Vector2) {
     if (this._health <= 0) return
     if (this.healthState === HealthState.DAMAGE) return
-    
+
     --this._health
-    
+
     if (this._health <= 0) {
       //TODO: die
       this.healthState = HealthState.DEAD
       this.anims.play('faune-faint')
-      this.setVelocity(0, 0)
     } else {
-      
       this.setVelocity(dir.x, dir.y)
       this.setTint(0xff0000)
       this.healthState = HealthState.DAMAGE
       this.damageTime = 0
-      
     }
   }
+  private throwKnife () {
+    const parts = this.anims.currentAnim.key.split('-')
+    const directions = parts[2]
+
+    const vec = new Phaser.Math.Vector2(0, 0)
+    switch (directions) {
+      case 'up':
+        vec.y = -1
+        break
+      case 'down':
+        vec.y = 1
+        break
+      default:
+      case 'side':
+        if (this.scaleX < 0) {
+          vec.x = -1
+        } else {
+          vec.x = 1
+        }
+        break
+    }
+
+    const angle = vec.angle()
+    const knife = this.knives?.get(this.x, this.y, '')
+    // Parou em 13:27
+  }
+
   preUpdate (t: number, dt: number) {
     super.preUpdate(t, dt)
     switch (this.healthState) {
@@ -76,9 +106,12 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
   update (cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
     if (
       this.healthState === HealthState.DAMAGE ||
-      this.healthState === HealthState.DEAD
+      this.healthState === HealthState.DEAD ||
+      !cursors
     ) {
       return
+    }
+    if (Phaser.Input.Keyboard.JustDown(cursors.space!)) {
     }
     const speed = 100
     if (cursors.left?.isDown) {

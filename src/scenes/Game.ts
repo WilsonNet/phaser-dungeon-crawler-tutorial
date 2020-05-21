@@ -7,7 +7,7 @@ import Faune from '../characters/Faune'
 import { sceneEvents } from '../events/EventCenter'
 export default class HelloWorldScene extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
-  private faune!: Faune 
+  private faune!: Faune
   private playerLizardCollider?: Phaser.Physics.Arcade.Collider
 
   private hit = 0
@@ -18,8 +18,6 @@ export default class HelloWorldScene extends Phaser.Scene {
   preload () {
     this.cursors = this.input.keyboard.createCursorKeys()
   }
-
-  
 
   create () {
     //Run two scenes at the same time
@@ -33,6 +31,10 @@ export default class HelloWorldScene extends Phaser.Scene {
     const wallsLayer = map.createStaticLayer('Walls', tileset)
     wallsLayer.setCollisionByProperty({ collides: true })
     // debugDraw(wallsLayer, this)
+
+    const knives = this.physics.add.group({
+      classType: Phaser.Physics.Arcade.Image
+    })
 
     Lizard.createLizardAnims(this.anims)
     createCharacterAnims(this.anims)
@@ -58,7 +60,19 @@ export default class HelloWorldScene extends Phaser.Scene {
       undefined,
       this
     )
+    this.physics.add.collider(knives, wallsLayer)
+    this.physics.add.collider(
+      knives,
+      lizards,
+      this.handleKnifeLizardCollision,
+      undefined,
+      this
+    )
   }
+  private handleKnifeLizardCollision (
+    knifeGo: Phaser.GameObjects.GameObject,
+    lizardGo: Phaser.GameObjects.GameObject
+  ) {}
   handlePlayerLizardCollision (
     fauneGo: Phaser.GameObjects.GameObject,
     lizardGo: Phaser.GameObjects.GameObject
@@ -70,13 +84,12 @@ export default class HelloWorldScene extends Phaser.Scene {
     this.faune.handleDamage(dir)
     sceneEvents.emit('player-health-changed', this.faune.health)
 
-    if (this.faune.health<=0){
+    if (this.faune.health <= 0) {
       this.playerLizardCollider?.destroy()
     }
   }
 
   update (t: number, dt: number) {
- 
     this.faune?.update(this.cursors)
   }
 }
