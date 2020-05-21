@@ -8,6 +8,7 @@ import { sceneEvents } from '../events/EventCenter'
 export default class HelloWorldScene extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
   private faune!: Faune 
+  private playerLizardCollider?: Phaser.Physics.Arcade.Collider
 
   private hit = 0
   constructor () {
@@ -50,7 +51,7 @@ export default class HelloWorldScene extends Phaser.Scene {
     lizards.get(256, 128, 'lizard')
     this.physics.add.collider(lizards, wallsLayer)
     this.physics.add.collider(this.faune, wallsLayer)
-    this.physics.add.collider(
+    this.playerLizardCollider = this.physics.add.collider(
       lizards,
       this.faune,
       this.handlePlayerLizardCollision,
@@ -68,6 +69,10 @@ export default class HelloWorldScene extends Phaser.Scene {
     const dir = new Phaser.Math.Vector2(dx, dy).normalize().scale(200)
     this.faune.handleDamage(dir)
     sceneEvents.emit('player-health-changed', this.faune.health)
+
+    if (this.faune.health<=0){
+      this.playerLizardCollider?.destroy()
+    }
   }
 
   update (t: number, dt: number) {
