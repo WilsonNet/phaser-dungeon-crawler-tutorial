@@ -83,8 +83,19 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
     }
 
     const angle = vec.angle()
-    const knife = this.knives?.get(this.x, this.y, '')
-    // Parou em 13:27
+    const knife = this.knives?.get(
+      this.x,
+      this.y,
+      'knife'
+    ) as Phaser.Physics.Arcade.Image
+
+    knife.setActive(true)
+    knife.setVisible(true)
+
+    knife.x += vec.x * 16
+    knife.x += vec.y * 16
+    knife.setRotation(angle)
+    knife.setVelocity(vec.x * 300, vec.y * 300)
   }
 
   preUpdate (t: number, dt: number) {
@@ -112,6 +123,8 @@ export default class Faune extends Phaser.Physics.Arcade.Sprite {
       return
     }
     if (Phaser.Input.Keyboard.JustDown(cursors.space!)) {
+      this.throwKnife()
+      return
     }
     const speed = 100
     if (cursors.left?.isDown) {

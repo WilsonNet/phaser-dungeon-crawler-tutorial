@@ -9,7 +9,8 @@ export default class HelloWorldScene extends Phaser.Scene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
   private faune!: Faune
   private playerLizardCollider?: Phaser.Physics.Arcade.Collider
-
+  private knives?: Phaser.Physics.Arcade.Group
+  private lizards?: Phaser.Physics.Arcade.Group
   private hit = 0
   constructor () {
     super('game')
@@ -32,17 +33,18 @@ export default class HelloWorldScene extends Phaser.Scene {
     wallsLayer.setCollisionByProperty({ collides: true })
     // debugDraw(wallsLayer, this)
 
-    const knives = this.physics.add.group({
+    this.knives = this.physics.add.group({
       classType: Phaser.Physics.Arcade.Image
     })
 
     Lizard.createLizardAnims(this.anims)
     createCharacterAnims(this.anims)
     this.faune = this.add.faune(128, 128, 'faune')
+    this.faune.setKnives(this.knives)
 
     this.cameras.main.startFollow(this.faune, true)
 
-    const lizards = this.physics.add.group({
+    this.lizards = this.physics.add.group({
       classType: Lizard,
       createCallback: go => {
         const lizGo = go as Lizard
@@ -50,30 +52,46 @@ export default class HelloWorldScene extends Phaser.Scene {
       }
     })
 
-    lizards.get(256, 128, 'lizard')
-    this.physics.add.collider(lizards, wallsLayer)
+    this.lizards.get(256, 128, 'lizard')
+    this.physics.add.collider(this.lizards, wallsLayer)
     this.physics.add.collider(this.faune, wallsLayer)
     this.playerLizardCollider = this.physics.add.collider(
-      lizards,
+      this.lizards,
       this.faune,
       this.handlePlayerLizardCollision,
       undefined,
       this
     )
-    this.physics.add.collider(knives, wallsLayer)
     this.physics.add.collider(
-      knives,
-      lizards,
+      this.knives,
+      wallsLayer,
+      this.handleKnifeWallCollision,
+      undefined,
+      this
+    )
+    this.physics.add.collider(
+      this.knives,
+      this.lizards,
       this.handleKnifeLizardCollision,
       undefined,
       this
     )
   }
+  private handleKnifeWallCollision (
+    knivesGo: Phaser.GameObjects.GameObject,
+    wallsGo: Phaser.GameObjects.GameObject
+  ) {
+    this.knives?.killAndHide(knivesGo)
+  }
+
   private handleKnifeLizardCollision (
-    knifeGo: Phaser.GameObjects.GameObject,
+    knivesGo: Phaser.GameObjects.GameObject,
     lizardGo: Phaser.GameObjects.GameObject
-  ) {}
-  handlePlayerLizardCollision (
+  ) {
+    this.knives?.killAndHide(knivesGo)
+    this.lizards?.killAndHide(lizardGo)
+  }
+  private handlePlayerLizardCollision (
     fauneGo: Phaser.GameObjects.GameObject,
     lizardGo: Phaser.GameObjects.GameObject
   ) {
